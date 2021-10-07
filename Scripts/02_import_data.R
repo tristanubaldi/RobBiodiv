@@ -1,7 +1,7 @@
 #################################################################################
 #
 #                                IMPORT DATA 
-#                           robinia analysis project
+#                             RobBiodiv project 
 #
 #################################################################################
 # Clean R space
@@ -15,4 +15,6 @@ source("Scripts/01_Load_libraries.r")
 ###### Database ###### 
 # Load Data Base
 
-robdata <- read.xlsx("Data/Synthese_data.xlsx")
+RobDataset <- read.xlsx("Data/Synthese_data.xlsx") %>% 
+  slice(-c(148, 149))
+
