@@ -69,6 +69,9 @@
 # install.packages("rworldmap")
 # install.packages("mapdata")
 # install.packages('cowplot')
+# install.packages('plotly')
+# install.packages('ggalt')
+# install.packages('viridis')
 
 #  LOAD
 
@@ -129,9 +132,9 @@ library(rworldmap)
 library(mapdata)
 library(ggtree)
 library(cowplot)
-
-
-
+library(plotly)
+library(ggalt)
+library(viridis)
 
 
 
