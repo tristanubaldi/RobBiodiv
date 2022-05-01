@@ -280,13 +280,4 @@ ggplot(RobDatafilt, aes(classe_age, ibp, color=ibp)) +
 #annotate(geom="text", size=7, x=0.3, y=18, label="Adj R2=0.01; p-value: 0.088") 
 ## Difference significant (negatively correlated with the proportion of Rob)
 
-### 3Dplot: IBP ~ proportion * age Robinia
-# Create the model
-summary(lm(ibp ~ proportion_robinier*classe_age, data = RobDataset))
-## 3 dimensions plot: plot_ly 
-plot_ly(x=RobDataset$ibp, y=RobDataset$proportion_robinier, z=RobDataset$classe_age, 
-        type="scatter3d", mode="markers", color=RobDataset$ibp) 
-# Significant ! Trend to have higher IBP when prop is low and classe age trend to 5
-
-
 

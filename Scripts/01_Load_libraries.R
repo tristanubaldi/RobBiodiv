@@ -72,6 +72,10 @@
 # install.packages('plotly')
 # install.packages('ggalt')
 # install.packages('viridis')
+# install.packages('RColorBrewer')
+# install.packages('ggthemes')
+# install.packages('multcompView')
+
 
 #  LOAD
 
@@ -105,6 +109,8 @@ library(V.PhyloMaker)
 library(ape)
 library(tidyverse)
 library(openxlsx)
+library(ggthemes)
+library(multcompView)
 
 # Analysis
 library(lme4)
@@ -135,6 +141,7 @@ library(cowplot)
 library(plotly)
 library(ggalt)
 library(viridis)
+library(RColorBrewer)
 
 
 
