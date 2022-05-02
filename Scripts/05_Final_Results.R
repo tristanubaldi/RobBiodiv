@@ -26,12 +26,13 @@ plot2 <- ggarrange(
   theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
                            axis.title=element_text(size=15,face="bold"),
                            title=element_text(size=15,face="bold"),
-                           plot.subtitle=element_text(size=12)) +
+                           plot.subtitle=element_text(size=12, face = "plain")) +
   scale_fill_brewer(palette="YlGn") +
-  labs(x = "Proportition de robinier",
+  labs(x = "Abondance en robinier",
        y = "IBP (%)",
        title = "Indice de Biodiversité Potentiel " ,
-          subtitle = "Adj R2 = 0.1106 ; p = 2.285e-05 ; slope = -0.19 ; Intercept = 0.59 "
+          subtitle = "Model linéaire
+Adj R2 = 0.1106 ; p = 2.285e-05 ; slope = -0.19 ; Intercept = 0.59 "
      )),
 
 (ggplot(data = RobDataset) +
@@ -45,12 +46,12 @@ plot2 <- ggarrange(
    theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
                             axis.title=element_text(size=15,face="bold"),
                             title=element_text(size=15,face="bold"),
-                            plot.subtitle=element_text(size=12)) +
+                            plot.subtitle=element_text(size=12, face="plain")) +
    scale_fill_brewer(palette="YlGn") +
-   labs(x = "Proportition de robinier",
-        y = "IBP (%)"
+   labs(x = "Abondance en robinier",
+        y = "IBP (%)",
         # title = "Indice de Biodiversité Potentiel " 
-        # subtitle = "Adj R2 = 0.1106 ; P = 2.285e-05"
+         subtitle = "Modèle non-linéaire"
    )),
 nrow = 2, ncol=1
 )
@@ -60,7 +61,7 @@ annotate_figure(plot2)
 ## Boxplot
 RobDataset$classe_age3 <- factor(RobDataset$classe_age3,
                        levels = c('<10 ans','10-15 ans', '15-20 ans', '20-30 ans', '>30 ans'),ordered = TRUE)
-# IBP
+### IBP
 # analysis of variance
 anova <- aov(formula = ibp ~ factor(classe_age), data = RobDataset)
 
@@ -81,11 +82,13 @@ dt$cld <- cld$Letters
 
 print(dt)
 
-ggplot(data = RobDataset) +
-  aes(x = classe_age3,
+g1 <- ggplot(data = RobDataset) +
+  aes(x = factor(classe_age3, levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+                                         '>30 ans'),ordered = TRUE),
       y = (ibp*100),
       group = classe_age3,
-      fill = factor(classe_age3)) + 
+      fill = factor(classe_age3, levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+                                            '>30 ans'),ordered = TRUE)) + 
   stat_boxplot(geom ='errorbar', width = 0.6) +
   geom_boxplot(alpha=1) + 
   annotate(geom="text", size =5, x="<10 ans", y=60, label="a") +
@@ -99,9 +102,67 @@ ggplot(data = RobDataset) +
                  scale_fill_brewer(palette="YlGn") +
   labs(x = "Classe d'âge",
        y = "IBP (%)",
-       title = "Indice de Biodiversité Potentiel " 
-       # subtitle = "Adj R2 = 0.03054 ; P = 0.01928"   ) 
+       title = "Indice de Biodiversité Potentiel "
+       # subtitle = "p-value: 1.413e-08"   
   ) 
+
+### MICRO-HABITATS
+# analysis of variance
+anova <- aov(formula = micro_habitats ~ factor(classe_age), data = RobDataset)
+
+# Tukey's test
+tukey <- TukeyHSD(anova)
+
+# compact letter display
+cld <- multcompLetters4(anova, tukey)
+
+# table with factors and 3rd quantile
+dt <- group_by(RobDataset, factor(classe_age)) %>%
+  summarise(w=mean(micro_habitats), sd = sd(micro_habitats)) %>%
+  arrange(desc(w))
+
+# extracting the compact letter display and adding to the Tk table
+cld <- as.data.frame.list(cld$`factor(classe_age)`)
+dt$cld <- cld$Letters
+
+print(dt)
+
+## sum number micro_hab by classe age
+mc <- aggregate(x= RobDataset$micro_habitats,
+                by= list(RobDataset$classe_age3),
+                FUN=sum)
+## plot
+g2 <- ggplot(data = mc) +
+  aes(x = factor(Group.1,
+                 levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+                            '>30 ans'),ordered = TRUE),
+      y = x,
+      group = Group.1,
+      fill = factor(Group.1,
+                    levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+                               '>30 ans'),ordered = TRUE)) + 
+  # stat_boxplot(geom ='errorbar', width = 0.6) +
+  geom_bar(stat='identity') + 
+  annotate(geom="text", size =5, x="<10 ans", y=20, label="a") +
+  annotate(geom="text", size =5, x="10-15 ans", y=40, label="ab") +
+  annotate(geom="text", size =5, x="15-20 ans", y=100, label="b") +
+  annotate(geom="text", size =5, x="20-30 ans", y=80, label="ab") +
+  annotate(geom="text", size =5, x=">30 ans", y=210, label="b") +
+  theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
+                           axis.title=element_text(size=15,face="bold"),
+                           title=element_text(size=15,face="bold"),
+                           plot.subtitle=element_text(size=12, face = "plain")) +
+  scale_fill_brewer(palette="YlGn") +
+  labs(x = "Classe d'âge",
+       y = "Nombre de microhabitats",
+       title = "Nombre de micro-habitats" )
+       # subtitle = "p-value: 0.0005584"   )
+
+plot3 <- ggarrange(g1, g2,
+nrow = 2, ncol=1
+)
+annotate_figure(plot3)
+
 
 #### proportion_robinier*classe_age ####
 # IBP
@@ -147,10 +208,6 @@ plot2 <- ggarrange(
 )
 annotate_figure(plot2)
 
-
-  
-
-
 #### Représentation 3D ####
 
 ### 3Dplot: IBP ~ proportion * age Robinia
@@ -169,3 +226,22 @@ plot_ly(z=RobDataset$ibp, x=RobDataset$proportion_robinier, y=RobDataset$classe_
     scene = list(xaxis=axx,yaxis=axy,zaxis=axz))
 
 
+#### Les tests ####
+ggplot(data = RobDataset) +
+  aes(x = proportion_robinier,
+      y = recouvrement_strate_herbace) + 
+  geom_point(size=1.5, color = "darkgoldenrod1") +
+  # geom_smooth(formula = y ~ x, method = 'loess') +
+  stat_smooth(formula = y ~ x, method = "lm", col = "red") +
+  # stat_smooth(method = lm, formula = y ~ poly(x, 5, raw = TRUE), col = "red") +
+  # stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3), col = "red") +
+  theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
+                           axis.title=element_text(size=15,face="bold"),
+                           title=element_text(size=15,face="bold"),
+                           plot.subtitle=element_text(size=12)) +
+  scale_fill_brewer(palette="YlGn") 
+# labs(x = "Proportition de robinier",
+#      y = "IBP (%)"
+# title = "Indice de Biodiversité Potentiel " 
+# subtitle = "Adj R2 = 0.1106 ; P = 2.285e-05"
+# )

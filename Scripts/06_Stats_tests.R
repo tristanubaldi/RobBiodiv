@@ -27,7 +27,7 @@ RobDataset$recouvrement_strate_herbace
 (GE9+GE10+GE11)
 
 # lm
-summary(lm(formula = ibp ~ proportion_robinier, data = RobDataset))
+summary(lm(formula = ibp ~ classe_age, data = RobDataset))
 # polynomial
 lm(bois_mort ~ poly(classe_age, 6, raw = TRUE), data = RobDataset) %>%
   summary()
@@ -39,6 +39,8 @@ summary(lm(ibp ~ splines::bs(proportion_robinier, df = 3), data = RobDataset))
 # ANOVA
 # (Type II tests)
 Anova(aov(formula = ibp ~ proportion_robinier*classe_age2, data = RobDataset))
+summary(aov(formula = recouvrement_strate_herbace + nbr_espece ~ proportion_robinier,
+            data = RobDataset))
 
 #### Tests de corrélation
 # proportion_robinier = variable continuous (quantitatives dénombrables)

@@ -35,3 +35,12 @@ RobDatafilt2 <- RobDataset %>%
 ## Classe age between 0 and 1
 RobDataset$classe_age2 <- (RobDataset$classe_age-min(RobDataset$classe_age))/
   (max(RobDataset$classe_age)-min(RobDataset$classe_age))
+
+RobDataset$structure_vegetation2 <- (RobDataset$structure_vegetation-min(RobDataset$structure_vegetation))/
+  (max(RobDataset$structure_vegetation)-min(RobDataset$structure_vegetation))
+
+RobDataset$micro_habitats2 <- (RobDataset$micro_habitats-min(RobDataset$micro_habitats))/
+  (max(RobDataset$micro_habitats)-min(RobDataset$micro_habitats))
+
+
+
