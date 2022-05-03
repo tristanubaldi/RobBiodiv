@@ -38,10 +38,9 @@ summary(lm(ibp ~ splines::bs(proportion_robinier, df = 3), data = RobDataset))
 
 # ANOVA
 # (Type II tests)
-Anova(aov(formula = ibp ~ proportion_robinier*classe_age2, data = RobDataset))
-summary(aov(formula = recouvrement_strate_herbace + nbr_espece ~ proportion_robinier,
-            data = RobDataset))
+Anova(aov(formula = ibp ~ proportion_robinier + classe_age4, data = RobDataset))
 
+summary(aov(formula = ibp ~ proportion_robinier + classe_age, data = RobDataset))
 #### Tests de corrélation
 # proportion_robinier = variable continuous (quantitatives dénombrables)
 # classe d'âge = variable discrete (quantitative finies)

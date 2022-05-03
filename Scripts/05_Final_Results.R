@@ -167,43 +167,101 @@ annotate_figure(plot3)
 #### proportion_robinier*classe_age ####
 # IBP
 plot2 <- ggarrange(
-  (ggplot(data = RobDataset) +
-     aes(x = (proportion_robinier*classe_age2),
-         y = (ibp*100)) + 
-     geom_point(size=1.5, color = "darkgoldenrod1") +
-     # geom_smooth(formula = y ~ x, method = 'loess') +
-     stat_smooth(formula = y ~ x, method = "lm", col = "red") +
-     # stat_smooth(method = lm, formula = y ~ poly(x, 5, raw = TRUE), col = "red") +
-     # stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3), col = "red") +
-     theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
-                              axis.title=element_text(size=15,face="bold"),
-                              title=element_text(size=15,face="bold"),
-                              plot.subtitle=element_text(size=12)) +
-     scale_fill_brewer(palette="YlGn") +
-     labs(x = "Proportition de robinier et classe d'âge",
-          y = "IBP (%)",
-          title = "Indice de Biodiversité Potentiel " ,
-          subtitle = "Adj R2 = 0.2434 ; p = 2.47e-09 ; slope = -0.019 ; Intercept = 0.32 "
-     )),
-  
-  (ggplot(data = RobDataset) +
-     aes(x = (proportion_robinier*classe_age2),
-         y = (ibp*100)) + 
-     geom_point(size=1.5, color = "darkgoldenrod1") +
-     geom_smooth(formula = y ~ x, method = 'loess') +
+  (
+
+    ggplot(data = RobDataset) +
+     aes(x = proportion_robinier,
+         y = (ibp*100)
+         ) + 
+     geom_point(aes(
+                    # size= (factor(classe_age3, levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+                    #                               '>30 ans'), ordered = TRUE)),
+                    color = (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+                                                     '>30 ans'), ordered = TRUE)))) +
+      geom_smooth(formula = y ~ x, method = 'lm',se=F,fullrange=TRUE,
+                  aes(color= (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+                                                             '>30 ans'), ordered = TRUE)))) +
+     geom_smooth(formula = y ~ x, method = 'lm', color = "red", se=F) +
+  # geom_smooth(formula = y ~ x, method = 'loess',se=F,fullrange=TRUE,
+  #             aes(color= (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+  #                                                        '>30 ans'), ordered = TRUE)))) +
+  # geom_smooth(formula = y ~ x, method = 'loess', color = "red", se=F) +
      # stat_smooth(formula = y ~ x, method = "lm", col = "red") +
      # stat_smooth(method = lm, formula = y ~ poly(x, 5, raw = TRUE), col = "red") +
      # stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3), col = "red") +
-     theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
+     theme_classic() + theme (
+                              axis.text=element_text(size=15),
                               axis.title=element_text(size=15,face="bold"),
                               title=element_text(size=15,face="bold"),
-                              plot.subtitle=element_text(size=12)) +
+                              plot.subtitle=element_text(size=12, face="plain")) +
      scale_fill_brewer(palette="YlGn") +
-     labs(x = "Proportition de robinier et classe d'âge",
-          y = "IBP (%)"
-          # title = "Indice de Biodiversité Potentiel " 
-          # subtitle = "Adj R2 = 0.1106 ; P = 2.285e-05"
-     )),
+     labs(x = "Abondance de robinier",
+          y = "IBP (%)",
+          color = "Classe d'âge",
+          size = "Classe d'âge",
+          title = "Indice de Biodiversité Potentiel "
+#           subtitle = "ANOVA (IBP ~ proportion en robinier) p = 0.002362 **,
+# ANOVA (IBP ~ classe d'âge) p = 4.886e-08 ***,
+# ANOVA (IBP ~ proportion en robinier:classe d'âge) p = 0.593849
+# "
+     )
+    ),
+  
+  (ggplot(data = RobDataset) +
+    aes(x = proportion_robinier,
+        y = (ibp*100)
+    ) + 
+    geom_point(aes(
+      # size= (factor(classe_age3, levels = c('<10 ans','10-15 ans','15-20 ans','20-30 ans',
+      #                               '>30 ans'), ordered = TRUE)),
+      color = (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+                                              '>30 ans'), ordered = TRUE)))) +
+    # geom_smooth(formula = y ~ x, method = 'lm',se=F,fullrange=TRUE,
+    #             aes(color= (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+    #                                                        '>30 ans'), ordered = TRUE)))) +
+    # geom_smooth(formula = y ~ x, method = 'lm', color = "red", se=F) +
+    geom_smooth(formula = y ~ x, method = 'loess',se=F,fullrange=TRUE,
+                aes(color= (factor(classe_age3, levels = c('<15 ans','15-30 ans',
+                                                           '>30 ans'), ordered = TRUE)))) +
+    geom_smooth(formula = y ~ x, method = 'loess', color = "red", se=F) +
+    # stat_smooth(formula = y ~ x, method = "lm", col = "red") +
+    # stat_smooth(method = lm, formula = y ~ poly(x, 5, raw = TRUE), col = "red") +
+    # stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3), col = "red") +
+    theme_classic() + theme (
+      axis.text=element_text(size=15),
+      axis.title=element_text(size=15,face="bold"),
+      title=element_text(size=15,face="bold"),
+      plot.subtitle=element_text(size=12, face="plain")) +
+    scale_fill_brewer(palette="YlGn") +
+    labs(x = "Abondance de robinier",
+         y = "IBP (%)",
+         color = "Classe d'âge",
+         size = "Classe d'âge"
+         # title = "Indice de Biodiversité Potentiel "
+#          subtitle = "ANOVA (ibp~proportion_robinier) p = 0.002362 **,
+# ANOVA (ibp~classe_age) p = 4.886e-08 ***,
+# ANOVA (ibp~proportion_robinier:classe_age) p = 0.593849
+          # "
+    )),
+  
+  # (ggplot(data = RobDataset) +
+  #    aes(x = (proportion_robinier*classe_age2),
+  #        y = (ibp*100)) + 
+  #    geom_point(size=1.5, color = "darkgoldenrod1") +
+  #    geom_smooth(formula = y ~ x, method = 'loess') +
+  #    # stat_smooth(formula = y ~ x, method = "lm", col = "red") +
+  #    # stat_smooth(method = lm, formula = y ~ poly(x, 5, raw = TRUE), col = "red") +
+  #    # stat_smooth(method = lm, formula = y ~ splines::bs(x, df = 3), col = "red") +
+  #    theme_classic() + theme (legend.position="none", axis.text=element_text(size=15),
+  #                             axis.title=element_text(size=15,face="bold"),
+  #                             title=element_text(size=15,face="bold"),
+  #                             plot.subtitle=element_text(size=12)) +
+  #    scale_fill_brewer(palette="YlGn") +
+  #    labs(x = "Proportition de robinier et classe d'âge",
+  #         y = "IBP (%)"
+  #         # title = "Indice de Biodiversité Potentiel " 
+  #         # subtitle = "Adj R2 = 0.1106 ; P = 2.285e-05"
+  #    )),
   nrow = 2, ncol=1
 )
 annotate_figure(plot2)
